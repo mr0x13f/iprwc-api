@@ -4,6 +4,10 @@ import com.timw.iprwc.resources.DebugResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 
 public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
@@ -18,16 +22,27 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<iprwcApiConfiguration> bootstrap) {
-        // TODO: application initialization
+        bootstrap.setConfigurationSourceProvider(
+                new ResourceConfigurationSourceProvider());
     }
 
     @Override
     public void run(final iprwcApiConfiguration configuration,
                     final Environment environment) {
+
         // TODO: implement application
         bulkRegister(environment,
                 new DebugResource()
         );
+
+        // Registreer authenticator
+//        environment.jersey().register(new AuthDynamicFeature(
+//                new BasicCredentialAuthFilter.Builder<User>()
+//                        .setAuthenticator(new AuthenticationService())
+//                        .setRealm("SECURITY REALM")
+//                        .buildAuthFilter()
+//        ));
+//        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
     }
 

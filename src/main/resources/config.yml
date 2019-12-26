@@ -1,0 +1,14 @@
+## YAML Config.
+---
+
+# server
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+
+database:
+  driverClass: com.sqlite.JDBC
+  url: jdbc:sqlite:databasefile.db
+  properties:
+    foreign_keys: true

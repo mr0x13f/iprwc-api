@@ -10,7 +10,7 @@ public class DebugResource {
 
     @GET
     //@Produces(MediaType.APPLICATION_JSON)
-    public String GETDebug() {
+    public String getDebug() {
         return "epic";
     }
 
