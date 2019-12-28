@@ -1,6 +1,8 @@
 package com.timw.iprwc;
 
 import com.timw.iprwc.resources.DebugResource;
+import com.timw.iprwc.resources.OrderResource;
+import com.timw.iprwc.resources.ProductResource;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -32,7 +34,9 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
         // TODO: implement application
         bulkRegister(environment,
-                new DebugResource()
+                new DebugResource(),
+                new OrderResource(),
+                new ProductResource()
         );
 
         // Registreer authenticator

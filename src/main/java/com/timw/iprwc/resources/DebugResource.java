@@ -1,10 +1,10 @@
 package com.timw.iprwc.resources;
 
+import com.timw.iprwc.models.Product;
 import com.timw.iprwc.services.DatabaseService;
+import com.timw.iprwc.services.JacksonService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +31,22 @@ public class DebugResource {
         }
 
         return tables;
+    }
+
+    @POST
+    @Path("/product")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String postProduct(String productData) {
+
+        Product product = (Product) JacksonService.fromJson(productData, Product.class);
+
+        String out = "";
+        out += "product_id: " + product.productId + "\n";
+        out += "name: " + product.name + "\n";
+        out += "description: " + product.description + "\n";
+        out += "price: " + product.price + "\n";
+
+        return out;
     }
 
 }
