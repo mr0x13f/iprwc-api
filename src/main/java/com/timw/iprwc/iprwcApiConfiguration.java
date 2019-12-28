@@ -1,20 +1,18 @@
 package com.timw.iprwc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.timw.iprwc.services.DatabaseService;
 import io.dropwizard.Configuration;
-import io.dropwizard.db.DataSourceFactory;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 public class iprwcApiConfiguration extends Configuration {
 
-    @Valid
-    @NotNull
-    @JsonProperty("database")
-    private DataSourceFactory datasourceFactory = new DataSourceFactory();
+    private String databaseUrl = "";
 
-    public DataSourceFactory getDataSourceFactory() {
-        return datasourceFactory;
+    @JsonProperty
+    public void setDatabaseUrl(String databaseUrl) {
+        DatabaseService.setDatabaseUrl(databaseUrl);
     }
+
 }

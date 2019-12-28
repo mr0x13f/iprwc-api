@@ -7,8 +7,4 @@ server:
     - type: http
       port: 8080
 
-database:
-  driverClass: com.sqlite.JDBC
-  url: jdbc:sqlite:databasefile.db
-  properties:
-    foreign_keys: true
+databaseUrl: D:/Users/Tim/Documents/School/iprwc/database.db
