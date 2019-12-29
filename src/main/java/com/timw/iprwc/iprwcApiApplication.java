@@ -1,17 +1,33 @@
 package com.timw.iprwc;
 
+import com.timw.iprwc.db.ProductDAO;
+import com.timw.iprwc.db.UserDAO;
+import com.timw.iprwc.models.Product;
+import com.timw.iprwc.models.User;
 import com.timw.iprwc.resources.DebugResource;
 import com.timw.iprwc.resources.OrderResource;
 import com.timw.iprwc.resources.ProductResource;
+import com.timw.iprwc.services.AuthenticationService;
 import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
+import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 
 public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
+
+    private final HibernateBundle<iprwcApiConfiguration> hibernateBundle
+            = new HibernateBundle<iprwcApiConfiguration>(Product.class, User.class) {
+        @Override
+        public DataSourceFactory getDataSourceFactory(iprwcApiConfiguration configuration) {
+            return configuration.getDataSourceFactory();
+        }
+    };
 
     public static void main(final String[] args) throws Exception {
         new iprwcApiApplication().run(args);
@@ -26,11 +42,15 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
     public void initialize(final Bootstrap<iprwcApiConfiguration> bootstrap) {
         bootstrap.setConfigurationSourceProvider(
                 new ResourceConfigurationSourceProvider());
+        bootstrap.addBundle(hibernateBundle);
     }
 
     @Override
     public void run(final iprwcApiConfiguration configuration,
                     final Environment environment) {
+
+        final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
+        final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
 
         // TODO: implement application
         bulkRegister(environment,
@@ -40,13 +60,14 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         );
 
         // Registreer authenticator
-//        environment.jersey().register(new AuthDynamicFeature(
-//                new BasicCredentialAuthFilter.Builder<User>()
-//                        .setAuthenticator(new AuthenticationService())
-//                        .setRealm("SECURITY REALM")
-//                        .buildAuthFilter()
-//        ));
-//        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        AuthenticationService authenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(AuthenticationService.class, UserDAO.class, userDAO);
+        environment.jersey().register(new AuthDynamicFeature(
+                new BasicCredentialAuthFilter.Builder<User>()
+                        .setAuthenticator(authenticationService)
+                        .setRealm("SECURITY REALM")
+                        .buildAuthFilter()
+        ));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
 
     }
 

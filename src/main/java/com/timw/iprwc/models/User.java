@@ -1,27 +1,33 @@
 package com.timw.iprwc.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.*;
 
-import java.util.UUID;
+@Entity
+@Table(name = "users")
+@NamedQueries({
+        @NamedQuery(name = "iprwc.User.findAll",
+            query = "select u from User u"),
+        @NamedQuery(name = "iprwc.User.findByEmail",
+            query = "select u from User u "
+                    + "where u.email = :email")
+})
+public class User implements java.security.Principal {
 
-public class User {
-
+    @Id
+    @Column(name = "user_id")
     public String userId;
+    @Column(name = "is_admin")
     public boolean isAdmin;
     public String name;
     public String email;
+    @Column(name = "password_hash")
+    public String passwordHash;
+    @Column(name = "password_salt")
+    public String passwordSalt;
 
-    @JsonCreator
-    public User(@JsonProperty("userId") String userId, // consume JSON field, but force random UUID
-                @JsonProperty("isAdmin") String isAdmin,  // consume JSON field, but force FALSE
-                @JsonProperty("name") String name,
-                @JsonProperty("email") String email) {
-
-        this.userId = UUID.randomUUID().toString();
-        this.isAdmin = false;
-        this.name = name;
-        this.email = email;
+    @Override
+    public String getName() {
+        return "";
     }
 
 }
