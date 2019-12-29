@@ -4,15 +4,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class JacksonService {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static String toJson(ArrayList<Object> list) {
+    public static String toJson(List list) {
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(list);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
+
+    public static String toJson(Optional optional) {
+        String jsonString = null;
+
+        if (!optional.isPresent()) return "";
+
+        try {
+            jsonString = mapper.writeValueAsString(optional.get());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

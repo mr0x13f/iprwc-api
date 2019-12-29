@@ -1,5 +1,7 @@
 package com.timw.iprwc.resources;
 
+import io.dropwizard.hibernate.UnitOfWork;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -8,6 +10,7 @@ public class OrderResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
     public String listOrders() {
         return "";
     }
@@ -15,6 +18,7 @@ public class OrderResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
     public String createOrder() {
         return "";
     }
@@ -22,6 +26,7 @@ public class OrderResource {
     @GET
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
     public String readOrder() {
         return "";
     }

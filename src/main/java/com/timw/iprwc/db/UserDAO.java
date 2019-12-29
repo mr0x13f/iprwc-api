@@ -22,7 +22,7 @@ public class UserDAO extends AbstractDAO<User> {
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable( uniqueResult((Query) namedQuery(
                 "iprwc.User.findByEmail")
-                    .setParameter("email", email)));
+                .setParameter("email", email)));
     }
 
 }

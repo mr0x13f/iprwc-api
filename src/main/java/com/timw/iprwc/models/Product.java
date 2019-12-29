@@ -15,7 +15,11 @@ import java.util.UUID;
 @Table(name = "products")
 @NamedQueries({
         @NamedQuery(name = "iprwc.Product.findAll",
-            query = "select p from Product p")
+            query = "select p from Product p"),
+
+        @NamedQuery(name = "iprwc.Product.findById",
+            query = "select p from Product p"
+                + " where p.productId = :productId")
 })
 
 public class Product {
@@ -28,6 +32,8 @@ public class Product {
     @Column(name = "image_url")
     public String imageUrl;
     public float price;
+
+    public Product() {}
 
     @JsonCreator
     public Product(@JsonProperty("productId") String productId, // consume JSON field, but force random UUID

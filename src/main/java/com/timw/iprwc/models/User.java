@@ -1,15 +1,22 @@
 package com.timw.iprwc.models;
 
-import javax.persistence.*;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
 @NamedQueries({
         @NamedQuery(name = "iprwc.User.findAll",
             query = "select u from User u"),
+
         @NamedQuery(name = "iprwc.User.findByEmail",
-            query = "select u from User u "
-                    + "where u.email = :email")
+            query = "select u from User u"
+                    + " where u.email = :email")
 })
 public class User implements java.security.Principal {
 

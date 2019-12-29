@@ -49,14 +49,14 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
     public void run(final iprwcApiConfiguration configuration,
                     final Environment environment) {
 
-        final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
+        final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
 
         // TODO: implement application
         bulkRegister(environment,
-                new DebugResource(),
+                new DebugResource(userDAO, productDAO),
                 new OrderResource(),
-                new ProductResource()
+                new ProductResource(productDAO)
         );
 
         // Registreer authenticator

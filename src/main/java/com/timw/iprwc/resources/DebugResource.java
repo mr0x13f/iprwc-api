@@ -1,5 +1,7 @@
 package com.timw.iprwc.resources;
 
+import com.timw.iprwc.db.ProductDAO;
+import com.timw.iprwc.db.UserDAO;
 import com.timw.iprwc.models.Product;
 import com.timw.iprwc.models.User;
 import com.timw.iprwc.services.DatabaseService;
@@ -16,9 +18,18 @@ import java.sql.SQLException;
 @Path("/debug")
 public class DebugResource {
 
+    private UserDAO userDAO;
+    private ProductDAO productDAO;
+
+    public DebugResource(UserDAO userDAO, ProductDAO productDAO) {
+        this.userDAO = userDAO;
+        this.productDAO = productDAO;
+    }
+
     @POST
     @Path("/product")
     @Consumes(MediaType.APPLICATION_JSON)
+    @UnitOfWork
     public String postProduct(String productData) {
 
         Product product = (Product) JacksonService.fromJson(productData, Product.class);
