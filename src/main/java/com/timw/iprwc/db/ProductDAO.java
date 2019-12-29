@@ -25,4 +25,8 @@ public class ProductDAO extends AbstractDAO<Product> {
                 .setParameter("productId", productId)));
     }
 
+    public Product save(Product product) {
+        return persist(product);
+    }
+
 }

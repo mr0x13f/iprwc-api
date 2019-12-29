@@ -11,10 +11,10 @@ public class JacksonService {
 
     private static ObjectMapper mapper = new ObjectMapper();
 
-    public static String toJson(List list) {
+    public static String toJson(Object object) {
         String jsonString = null;
         try {
-            jsonString = mapper.writeValueAsString(list);
+            jsonString = mapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

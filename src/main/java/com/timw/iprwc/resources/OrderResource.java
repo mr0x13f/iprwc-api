@@ -1,5 +1,7 @@
 package com.timw.iprwc.resources;
 
+import com.timw.iprwc.models.User;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.*;
@@ -11,7 +13,7 @@ public class OrderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String listOrders() {
+    public String listOrders(@Auth User user) {
         return "";
     }
 
@@ -19,7 +21,7 @@ public class OrderResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String createOrder() {
+    public String createOrder(@Auth User user) {
         return "";
     }
 
@@ -27,7 +29,7 @@ public class OrderResource {
     @Path("{orderId}")
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String readOrder() {
+    public String readOrder(@Auth User user) {
         return "";
     }
 

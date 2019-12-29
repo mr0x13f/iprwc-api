@@ -3,11 +3,12 @@ package com.timw.iprwc.resources;
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.models.Product;
 import com.timw.iprwc.services.JacksonService;
+import io.dropwizard.hibernate.AbstractDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Optional;
 
 @Path("/products")
 public class ProductResource {
@@ -26,11 +27,16 @@ public class ProductResource {
     }
 
     @POST
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String createProduct() {
-        return "";
+    public String createProduct(String productData) {
+
+        Product product = (Product) JacksonService.fromJson(productData, Product.class);
+        productDAO.save(product);
+        return JacksonService.toJson(product);
+
     }
 
     @GET
@@ -43,6 +49,7 @@ public class ProductResource {
 
     @PUT
     @Path("{productId}")
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
@@ -52,6 +59,7 @@ public class ProductResource {
 
     @DELETE
     @Path("{productId}")
+    @RolesAllowed("admin")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
