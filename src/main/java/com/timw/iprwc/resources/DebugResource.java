@@ -9,6 +9,7 @@ import com.timw.iprwc.services.JacksonService;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
@@ -48,6 +49,14 @@ public class DebugResource {
     @UnitOfWork
     public String authTest(@Auth User user) {
         return "Welcome, " + user.name;
+    }
+
+    @GET
+    @Path("/admin")
+    @RolesAllowed("admin")
+    @UnitOfWork
+    public String adminTest(@Auth User user) {
+        return "hello mr admin :)";
     }
 
 }

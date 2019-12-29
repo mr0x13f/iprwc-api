@@ -8,6 +8,7 @@ import com.timw.iprwc.resources.DebugResource;
 import com.timw.iprwc.resources.OrderResource;
 import com.timw.iprwc.resources.ProductResource;
 import com.timw.iprwc.services.AuthenticationService;
+import com.timw.iprwc.services.AuthorizationService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -18,6 +19,7 @@ import io.dropwizard.hibernate.UnitOfWorkAwareProxyFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
@@ -64,10 +66,14 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         environment.jersey().register(new AuthDynamicFeature(
                 new BasicCredentialAuthFilter.Builder<User>()
                         .setAuthenticator(authenticationService)
+                        .setAuthorizer(new AuthorizationService())
                         .setRealm("SECURITY REALM")
                         .buildAuthFilter()
         ));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+
+        // Registreer authorizer
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
 
     }
 
