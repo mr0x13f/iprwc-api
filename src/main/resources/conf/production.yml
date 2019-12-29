@@ -1,0 +1,14 @@
+## YAML Config.
+---
+
+# server
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+
+database:
+  driverClass: org.sqlite.JDBC
+  url: jdbc:sqlite:D:/Users/Tim/Documents/School/iprwc/database.db
+  properties:
+    hibernate.dialect: org.hibernate.dialect.H2Dialect
