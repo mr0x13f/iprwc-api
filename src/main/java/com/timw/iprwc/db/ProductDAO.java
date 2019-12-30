@@ -25,8 +25,25 @@ public class ProductDAO extends AbstractDAO<Product> {
                 .setParameter("productId", productId)));
     }
 
-    public Product save(Product product) {
-        return persist(product);
+    public void delete(String productId) {
+        namedQuery(
+                "iprwc.Product.delete")
+                .setParameter("productId", productId)
+                .executeUpdate();
     }
+
+    public Product create(Product product) {
+
+        return persist(product);
+
+    }
+
+    public Product update(String productId, Product product) {
+
+        product.productId = productId;
+        return persist(product);
+
+    }
+
 
 }

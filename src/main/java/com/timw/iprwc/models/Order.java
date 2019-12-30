@@ -23,11 +23,12 @@ public class Order {
                 @JsonProperty("productId") String productId,
                 @JsonProperty("amount") int amount) {
 
-        this.orderId = UUID.randomUUID().toString();
-        this.date = OffsetDateTime.now( ZoneOffset.UTC ).toString();
         this.userId = userId;
         this.productId = productId;
         this.amount = amount;
+
+        this.orderId = UUID.randomUUID().toString();
+        this.date = OffsetDateTime.now( ZoneOffset.UTC ).toString();
     }
 
 

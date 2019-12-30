@@ -2,15 +2,17 @@ package com.timw.iprwc.resources;
 
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.models.Product;
-import com.timw.iprwc.services.JacksonService;
-import io.dropwizard.hibernate.AbstractDAO;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.Optional;
 
 @Path("/products")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ProductResource {
 
     private ProductDAO productDAO;
@@ -20,51 +22,50 @@ public class ProductResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String listProducts() {
-        return JacksonService.toJson( productDAO.findAll() );
+    public List listProducts() {
+
+        return productDAO.findAll();
+
     }
 
     @POST
     @RolesAllowed("admin")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String createProduct(String productData) {
+    public Product createProduct(Product product) {
 
-        Product product = (Product) JacksonService.fromJson(productData, Product.class);
-        productDAO.save(product);
-        return JacksonService.toJson(product);
+        return productDAO.create(product);
 
     }
 
     @GET
     @Path("{productId}")
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String readProduct(@PathParam("productId") String productId) {
-        return JacksonService.toJson(productDAO.findById(productId));
+    public Optional<Product> readProduct(@PathParam("productId") String productId) {
+
+        return productDAO.findById(productId);
+
     }
 
     @PUT
     @Path("{productId}")
     @RolesAllowed("admin")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String updateProduct() {
-        return "";
+    public Product updateProduct(@PathParam("productId") String productId, Product product) {
+
+        return productDAO.update(productId, product);
+
+
     }
 
     @DELETE
     @Path("{productId}")
     @RolesAllowed("admin")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
-    public String deleteProduct() {
-        return "";
+    public void deleteProduct(@PathParam("productId") String productId) {
+
+        productDAO.delete(productId);
+
     }
 
 }

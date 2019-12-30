@@ -19,6 +19,10 @@ import java.util.UUID;
 
         @NamedQuery(name = "iprwc.Product.findById",
             query = "select p from Product p"
+                + " where p.productId = :productId"),
+
+        @NamedQuery(name = "iprwc.Product.delete",
+            query = "delete from Product p"
                 + " where p.productId = :productId")
 })
 
@@ -42,11 +46,12 @@ public class Product {
                    @JsonProperty("imageUrl") String imageUrl,
                    @JsonProperty("price") float price) {
 
-        this.productId = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
         this.price = price;
+
+        this.productId = UUID.randomUUID().toString();
     }
 
 }

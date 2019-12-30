@@ -8,18 +8,17 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/orders")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public String listOrders(@Auth User user) {
         return "";
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public String createOrder(@Auth User user) {
         return "";
@@ -27,7 +26,6 @@ public class OrderResource {
 
     @GET
     @Path("{orderId}")
-    @Produces(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public String readOrder(@Auth User user) {
         return "";

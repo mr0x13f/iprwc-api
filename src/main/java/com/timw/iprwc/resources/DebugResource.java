@@ -12,11 +12,11 @@ import io.dropwizard.hibernate.UnitOfWork;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Path("/debug")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class DebugResource {
 
     private UserDAO userDAO;
@@ -29,7 +29,6 @@ public class DebugResource {
 
     @POST
     @Path("/product")
-    @Consumes(MediaType.APPLICATION_JSON)
     @UnitOfWork
     public String postProduct(String productData) {
 
