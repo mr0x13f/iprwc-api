@@ -1,6 +1,8 @@
 package com.timw.iprwc.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.timw.iprwc.services.AuthenticationService;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -14,12 +16,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @NamedQueries({
-        @NamedQuery(name = "iprwc.User.findAll",
-            query = "select u from User u"),
-
         @NamedQuery(name = "iprwc.User.findByEmail",
             query = "select u from User u"
-                    + " where u.email = :email")
+                    + " where u.email = :email"),
+
+        @NamedQuery(name = "iprwc.User.delete",
+                query = "delete from User u"
+                        + " where u.userId = :userId")
 })
 public class User implements java.security.Principal {
 
@@ -37,10 +40,7 @@ public class User implements java.security.Principal {
     @Column(name = "password_salt")
     public String passwordSalt;
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    public User() {}
 
     public User(RegisterForm registerForm) {
 
@@ -52,6 +52,11 @@ public class User implements java.security.Principal {
         passwordSalt = AuthenticationService.generateSalt();
         passwordHash = AuthenticationService.hashWithSalt(registerForm.password, passwordSalt);
 
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

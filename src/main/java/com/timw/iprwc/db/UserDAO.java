@@ -25,10 +25,25 @@ public class UserDAO extends AbstractDAO<User> {
                 .setParameter("email", email)));
     }
 
+    public void delete(String userId) {
+        namedQuery(
+                "iprwc.User.delete")
+                .setParameter("userId", userId)
+                .executeUpdate();
+    }
+
     public User create(User user) {
 
         return persist(user);
 
     }
+
+    public User update(String userId, User user) {
+
+        user.userId = userId;
+        return persist(user);
+
+    }
+
 
 }

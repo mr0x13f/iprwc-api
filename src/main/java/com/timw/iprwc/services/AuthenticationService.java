@@ -18,6 +18,8 @@ import java.util.Optional;
 
 public class AuthenticationService implements Authenticator<BasicCredentials, User> {
 
+    private static final int SALT_SIZE = 8;
+
     private static Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
     private static Base64.Decoder decoder = Base64.getUrlDecoder();
 
@@ -49,7 +51,7 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
     public static String generateSalt() {
 
         SecureRandom random = new SecureRandom();
-        byte salt[] = new byte[6];
+        byte salt[] = new byte[SALT_SIZE];
         random.nextBytes(salt);
 
         return encoder.encodeToString(salt);
