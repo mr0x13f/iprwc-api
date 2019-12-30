@@ -26,39 +26,51 @@ public class CartResource {
     @GET
     @UnitOfWork
     public List<CartItem> listCartItems(@Auth User user) {
+
         return cartDAO.findAll(user);
+
     }
 
     @POST
     @UnitOfWork
     public Optional<CartItem> addToCart(@Auth User user, CartItem cartItem) {
+
         return CartService.addToCart(user, cartItem);
+
     }
 
     @GET
     @Path("/{productId}")
     @UnitOfWork
     public Optional<CartItem> readCartItem(@Auth User user, @PathParam("productId") String productId) {
+
         return cartDAO.findById(user, productId);
+
     }
 
     @DELETE
     @Path("/{productId}")
     @UnitOfWork
     public void deleteCartItem(@Auth User user, @PathParam("productId") String productId) {
+
         cartDAO.delete(user, productId);
+
     }
 
     @DELETE
     @UnitOfWork
     public void clearCart(@Auth User user) {
+
         cartDAO.clear(user);
+
     }
 
     @GET
     @Path("/checkout")
     @UnitOfWork
     public void checkout(@Auth User user) {
+
+        CartService.checkout(user);
 
     }
 

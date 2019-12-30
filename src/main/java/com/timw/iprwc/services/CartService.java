@@ -1,8 +1,10 @@
 package com.timw.iprwc.services;
 
 import com.timw.iprwc.db.CartDAO;
+import com.timw.iprwc.db.OrderDAO;
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.models.CartItem;
+import com.timw.iprwc.models.Order;
 import com.timw.iprwc.models.User;
 
 import java.util.List;
@@ -12,10 +14,12 @@ public class CartService {
 
     private static CartDAO cartDAO;
     private static ProductDAO productDAO;
+    private static OrderDAO orderDAO;
 
-    public static void setDAO(CartDAO cartDAO, ProductDAO productDAO) {
+    public static void setDAO(CartDAO cartDAO, ProductDAO productDAO, OrderDAO orderDAO) {
         CartService.cartDAO = cartDAO;
         CartService.productDAO = productDAO;
+        CartService.orderDAO = orderDAO;
     }
 
     public static Optional<CartItem> addToCart(User user, CartItem cartItem) {
@@ -34,7 +38,10 @@ public class CartService {
         List<CartItem> cartItemList = cartDAO.findAll(user);
         cartDAO.clear(user);
 
-        //TODO create orders
+        for (CartItem cartItem : cartItemList) {
+            Order order = new Order(cartItem);
+            orderDAO.create(user, order);
+        }
 
     }
 

@@ -25,7 +25,6 @@ import java.util.UUID;
             query = "delete from Product p"
                 + " where p.productId = :productId")
 })
-
 public class Product {
 
     @Id

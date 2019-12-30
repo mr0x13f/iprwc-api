@@ -1,5 +1,6 @@
 package com.timw.iprwc.resources;
 
+import com.timw.iprwc.db.OrderDAO;
 import com.timw.iprwc.models.Order;
 import com.timw.iprwc.models.User;
 import io.dropwizard.auth.Auth;
@@ -15,17 +16,27 @@ import java.util.Optional;
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
 
+    private OrderDAO orderDAO;
+
+    public OrderResource(OrderDAO orderDAO) {
+        this.orderDAO = orderDAO;
+    }
+
     @GET
     @UnitOfWork
     public List<Order> listOrders(@Auth User user) {
-        return null;
+
+        return orderDAO.findAll(user);
+
     }
 
     @GET
     @Path("{orderId}")
     @UnitOfWork
-    public Optional<Order> readOrder(@Auth User user) {
-        return null;
+    public Optional<Order> readOrder(@Auth User user, @PathParam("orderId") String orderId) {
+
+        return orderDAO.findById(user, orderId);
+
     }
 
 }

@@ -1,6 +1,7 @@
 package com.timw.iprwc;
 
 import com.timw.iprwc.db.CartDAO;
+import com.timw.iprwc.db.OrderDAO;
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.db.UserDAO;
 import com.timw.iprwc.models.*;
@@ -54,9 +55,10 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
         final CartDAO cartDAO = new CartDAO(hibernateBundle.getSessionFactory());
+        final OrderDAO orderDAO = new OrderDAO(hibernateBundle.getSessionFactory());
 
         UserService.setDAO(userDAO);
-        CartService.setDAO(cartDAO, productDAO);
+        CartService.setDAO(cartDAO, productDAO, orderDAO);
 
         // TODO: implement application
         bulkRegister(environment,
@@ -64,7 +66,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
                 new UserResource(userDAO),
                 new ProductResource(productDAO),
                 new CartResource(cartDAO),
-                new OrderResource()
+                new OrderResource(orderDAO)
         );
 
         // Registreer authenticator

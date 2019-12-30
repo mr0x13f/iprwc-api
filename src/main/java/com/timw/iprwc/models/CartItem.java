@@ -30,7 +30,6 @@ import java.io.Serializable;
                 query = "delete from CartItem c"
                         + " where c.userId = :userId")
 })
-
 public class CartItem implements Serializable {
 
     @Id

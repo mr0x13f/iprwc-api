@@ -55,4 +55,11 @@ public class UserResource {
 
     }
 
+    @GET
+    @Path("/gdpr")
+    @UnitOfWork
+    public void gdpr(@Auth User user) {
+
+    }
+
 }
