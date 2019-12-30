@@ -4,6 +4,7 @@ import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.db.UserDAO;
 import com.timw.iprwc.models.Product;
 import com.timw.iprwc.models.User;
+import com.timw.iprwc.services.AuthenticationService;
 import com.timw.iprwc.services.DatabaseService;
 import com.timw.iprwc.services.JacksonService;
 import io.dropwizard.auth.Auth;
@@ -12,6 +13,8 @@ import io.dropwizard.hibernate.UnitOfWork;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 
 @Path("/debug")

@@ -6,9 +6,19 @@ import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
 import java.util.Optional;
 
 public class AuthenticationService implements Authenticator<BasicCredentials, User> {
+
+    private static Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+    private static Base64.Decoder decoder = Base64.getUrlDecoder();
 
     private UserDAO userDAO;
 
@@ -25,7 +35,15 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
         if (!optionalUser.isPresent()) return Optional.empty(); // No user with matching email found
 
         User user = optionalUser.get();
-        String saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
+        String saltedHash = null;
+
+        try {
+            saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
         if (!user.passwordHash.equals(saltedHash)) return Optional.empty(); // Passwords don't match
 
@@ -33,13 +51,23 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
 
     }
 
-    public static String generateSalt() {
-        //TODO ////////////////////////////////////////////////////
-        return "funny";
+    private static String generateSalt() {
+
+        SecureRandom random = new SecureRandom();
+        byte salt[] = new byte[6];
+        random.nextBytes(salt);
+
+        return encoder.encodeToString(salt);
+
     }
 
-    public static String hashWithSalt(String password, String salt) {
-        //TODO ////////////////////////////////////////////////////
-        return password+"."+salt;
+    private static String hashWithSalt(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), decoder.decode(salt), 65536, 128);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] hash = factory.generateSecret(spec).getEncoded();
+
+        return encoder.encodeToString(hash);
+
     }
 }
