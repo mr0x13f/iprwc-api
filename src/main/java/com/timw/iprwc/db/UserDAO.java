@@ -25,4 +25,10 @@ public class UserDAO extends AbstractDAO<User> {
                 .setParameter("email", email)));
     }
 
+    public User create(User user) {
+
+        return persist(user);
+
+    }
+
 }

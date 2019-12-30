@@ -1,6 +1,7 @@
 package com.timw.iprwc.services;
 
 import com.timw.iprwc.db.UserDAO;
+import com.timw.iprwc.models.RegisterForm;
 import com.timw.iprwc.models.User;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -37,13 +38,7 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
         User user = optionalUser.get();
         String saltedHash = null;
 
-        try {
-            saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
+        saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
 
         if (!user.passwordHash.equals(saltedHash)) return Optional.empty(); // Passwords don't match
 
@@ -51,7 +46,7 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
 
     }
 
-    private static String generateSalt() {
+    public static String generateSalt() {
 
         SecureRandom random = new SecureRandom();
         byte salt[] = new byte[6];
@@ -61,13 +56,22 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
 
     }
 
-    private static String hashWithSalt(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public static String hashWithSalt(String password, String salt) {
 
         KeySpec spec = new PBEKeySpec(password.toCharArray(), decoder.decode(salt), 65536, 128);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        byte[] hash = factory.generateSecret(spec).getEncoded();
+        byte[] hash = null;
+
+        try {
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            hash = factory.generateSecret(spec).getEncoded();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
         return encoder.encodeToString(hash);
 
     }
+
 }

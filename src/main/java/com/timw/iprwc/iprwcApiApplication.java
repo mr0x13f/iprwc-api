@@ -7,8 +7,10 @@ import com.timw.iprwc.models.User;
 import com.timw.iprwc.resources.DebugResource;
 import com.timw.iprwc.resources.OrderResource;
 import com.timw.iprwc.resources.ProductResource;
+import com.timw.iprwc.resources.UserResource;
 import com.timw.iprwc.services.AuthenticationService;
 import com.timw.iprwc.services.AuthorizationService;
+import com.timw.iprwc.services.UserService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -54,11 +56,14 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
 
+        UserService.setUserDAO(userDAO);
+
         // TODO: implement application
         bulkRegister(environment,
                 new DebugResource(userDAO, productDAO),
                 new OrderResource(),
-                new ProductResource(productDAO)
+                new ProductResource(productDAO),
+                new UserResource(userDAO)
         );
 
         // Registreer authenticator
