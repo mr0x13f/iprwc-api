@@ -1,15 +1,13 @@
 package com.timw.iprwc;
 
+import com.timw.iprwc.db.CartDAO;
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.db.UserDAO;
-import com.timw.iprwc.models.Product;
-import com.timw.iprwc.models.User;
-import com.timw.iprwc.resources.DebugResource;
-import com.timw.iprwc.resources.OrderResource;
-import com.timw.iprwc.resources.ProductResource;
-import com.timw.iprwc.resources.UserResource;
+import com.timw.iprwc.models.*;
+import com.timw.iprwc.resources.*;
 import com.timw.iprwc.services.AuthenticationService;
 import com.timw.iprwc.services.AuthorizationService;
+import com.timw.iprwc.services.CartService;
 import com.timw.iprwc.services.UserService;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -26,7 +24,7 @@ import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
     private final HibernateBundle<iprwcApiConfiguration> hibernateBundle
-            = new HibernateBundle<iprwcApiConfiguration>(Product.class, User.class) {
+            = new HibernateBundle<iprwcApiConfiguration>(Product.class, User.class, CartItem.class, Order.class, WishlistItem.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(iprwcApiConfiguration configuration) {
             return configuration.getDataSourceFactory();
@@ -55,15 +53,18 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
+        final CartDAO cartDAO = new CartDAO(hibernateBundle.getSessionFactory());
 
-        UserService.setUserDAO(userDAO);
+        UserService.setDAO(userDAO);
+        CartService.setDAO(cartDAO, productDAO);
 
         // TODO: implement application
         bulkRegister(environment,
                 new DebugResource(userDAO, productDAO),
-                new OrderResource(),
+                new UserResource(userDAO),
                 new ProductResource(productDAO),
-                new UserResource(userDAO)
+                new CartResource(cartDAO),
+                new OrderResource()
         );
 
         // Registreer authenticator

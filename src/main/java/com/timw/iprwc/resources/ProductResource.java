@@ -23,7 +23,7 @@ public class ProductResource {
 
     @GET
     @UnitOfWork
-    public List listProducts() {
+    public List<Product> listProducts() {
 
         return productDAO.findAll();
 

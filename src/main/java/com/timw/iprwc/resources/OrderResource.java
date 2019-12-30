@@ -1,11 +1,14 @@
 package com.timw.iprwc.resources;
 
+import com.timw.iprwc.models.Order;
 import com.timw.iprwc.models.User;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.Optional;
 
 @Path("/orders")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -14,21 +17,15 @@ public class OrderResource {
 
     @GET
     @UnitOfWork
-    public String listOrders(@Auth User user) {
-        return "";
-    }
-
-    @POST
-    @UnitOfWork
-    public String createOrder(@Auth User user) {
-        return "";
+    public List<Order> listOrders(@Auth User user) {
+        return null;
     }
 
     @GET
     @Path("{orderId}")
     @UnitOfWork
-    public String readOrder(@Auth User user) {
-        return "";
+    public Optional<Order> readOrder(@Auth User user) {
+        return null;
     }
 
 }

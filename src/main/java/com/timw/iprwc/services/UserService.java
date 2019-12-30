@@ -18,7 +18,7 @@ public class UserService {
     private static EmailValidator emailValidator = new EmailValidator();
     private static UserDAO userDAO;
 
-    public static void setUserDAO(UserDAO userDAO) {
+    public static void setDAO(UserDAO userDAO) {
         UserService.userDAO = userDAO;
     }
 
