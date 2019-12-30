@@ -46,16 +46,19 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
     public void run(final iprwcApiConfiguration configuration,
                     final Environment environment) {
 
+        // DAOs
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
         final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
         final CartDAO cartDAO = new CartDAO(hibernateBundle.getSessionFactory());
         final OrderDAO orderDAO = new OrderDAO(hibernateBundle.getSessionFactory());
         final WishlistDAO wishlistDAO = new WishlistDAO(hibernateBundle.getSessionFactory());
 
+        // Services
         UserService.setDAO(userDAO);
         CartService.setDAO(cartDAO, productDAO, orderDAO);
         WishlistService.setDAO(wishlistDAO, productDAO);
 
+        // Resources
         bulkRegister(environment,
                 new DebugResource(userDAO, productDAO),
                 new UserResource(userDAO),
@@ -65,7 +68,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
                 new WishlistResource(wishlistDAO)
         );
 
-        // Registreer authenticator
+        // Authenticator
         AuthenticationService authenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(AuthenticationService.class, UserDAO.class, userDAO);
         environment.jersey().register(new AuthDynamicFeature(
                 new BasicCredentialAuthFilter.Builder<User>()
@@ -81,7 +84,6 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
     private static void bulkRegister(Environment environment, Object ... resources) {
 
-        // Register alle meegegeven resources
         for (Object resource : resources) {
             environment.jersey().register(resource);
         }
