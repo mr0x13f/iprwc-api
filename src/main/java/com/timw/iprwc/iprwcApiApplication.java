@@ -1,15 +1,9 @@
 package com.timw.iprwc;
 
-import com.timw.iprwc.db.CartDAO;
-import com.timw.iprwc.db.OrderDAO;
-import com.timw.iprwc.db.ProductDAO;
-import com.timw.iprwc.db.UserDAO;
+import com.timw.iprwc.db.*;
 import com.timw.iprwc.models.*;
 import com.timw.iprwc.resources.*;
-import com.timw.iprwc.services.AuthenticationService;
-import com.timw.iprwc.services.AuthorizationService;
-import com.timw.iprwc.services.CartService;
-import com.timw.iprwc.services.UserService;
+import com.timw.iprwc.services.*;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -56,17 +50,19 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         final ProductDAO productDAO = new ProductDAO(hibernateBundle.getSessionFactory());
         final CartDAO cartDAO = new CartDAO(hibernateBundle.getSessionFactory());
         final OrderDAO orderDAO = new OrderDAO(hibernateBundle.getSessionFactory());
+        final WishlistDAO wishlistDAO = new WishlistDAO(hibernateBundle.getSessionFactory());
 
         UserService.setDAO(userDAO);
         CartService.setDAO(cartDAO, productDAO, orderDAO);
+        WishlistService.setDAO(wishlistDAO, productDAO);
 
-        // TODO: implement application
         bulkRegister(environment,
                 new DebugResource(userDAO, productDAO),
                 new UserResource(userDAO),
                 new ProductResource(productDAO),
                 new CartResource(cartDAO),
-                new OrderResource(orderDAO)
+                new OrderResource(orderDAO),
+                new WishlistResource(wishlistDAO)
         );
 
         // Registreer authenticator
