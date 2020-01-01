@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <dropwizard.version>2.0.0-rc9</dropwizard.version>
         <jackson.version>2.10.0</jackson.version>
-        <mainClass>com.timw.iprwc.iprwc-apiApplication</mainClass>
+        <mainClass>com.timw.iprwc.iprwcApiApplication</mainClass>
     </properties>
 
     <dependencyManagement>
@@ -124,7 +124,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.1.0</version>
                 <configuration>
                     <archive>
                         <manifest>
