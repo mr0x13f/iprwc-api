@@ -1,9 +1,10 @@
 package com.timw.iprwc.services;
 
 import com.timw.iprwc.db.UserDAO;
-import com.timw.iprwc.models.RegisterForm;
+import com.timw.iprwc.models.BasicAuth;
 import com.timw.iprwc.models.User;
 import io.dropwizard.auth.Authenticator;
+import io.dropwizard.auth.PrincipalImpl;
 import io.dropwizard.auth.basic.BasicCredentials;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -16,7 +17,7 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 import java.util.Optional;
 
-public class AuthenticationService implements Authenticator<BasicCredentials, User> {
+public class BasicAuthenticationService implements Authenticator<BasicCredentials, BasicAuth> {
 
     private static final int SALT_SIZE = 8;
 
@@ -25,26 +26,24 @@ public class AuthenticationService implements Authenticator<BasicCredentials, Us
 
     private UserDAO userDAO;
 
-    public AuthenticationService(UserDAO userDAO) {
+    public BasicAuthenticationService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     @Override
     @UnitOfWork
-    public Optional<User> authenticate(BasicCredentials credentials) {
+    public Optional<BasicAuth> authenticate(BasicCredentials credentials) {
 
         Optional<User> optionalUser = userDAO.findByEmail(credentials.getUsername());
 
         if (!optionalUser.isPresent()) return Optional.empty(); // No user with matching email found
 
         User user = optionalUser.get();
-        String saltedHash = null;
-
-        saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
+        String saltedHash = hashWithSalt(credentials.getPassword(), user.passwordSalt);
 
         if (!user.passwordHash.equals(saltedHash)) return Optional.empty(); // Passwords don't match
 
-        return Optional.of(user);
+        return Optional.of(new BasicAuth(user));
 
     }
 

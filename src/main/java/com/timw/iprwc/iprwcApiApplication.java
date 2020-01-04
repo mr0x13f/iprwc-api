@@ -1,12 +1,14 @@
 package com.timw.iprwc;
 
+import com.github.toastshaman.dropwizard.auth.jwt.JwtAuthFilter;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.timw.iprwc.db.*;
 import com.timw.iprwc.models.*;
 import com.timw.iprwc.resources.*;
 import com.timw.iprwc.services.*;
 import io.dropwizard.Application;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.*;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -15,7 +17,12 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.configuration.ResourceConfigurationSourceProvider;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.jose4j.jwt.consumer.JwtConsumer;
+import org.jose4j.jwt.consumer.JwtConsumerBuilder;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.keys.HmacKey;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -74,16 +81,24 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         );
 
         // Authenticator
-        AuthenticationService authenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(AuthenticationService.class, UserDAO.class, userDAO);
-        environment.jersey().register(new AuthDynamicFeature(
-                new BasicCredentialAuthFilter.Builder<User>()
-                        .setAuthenticator(authenticationService)
-                        .setAuthorizer(new AuthorizationService())
-                        .setRealm("SECURITY REALM")
-                        .buildAuthFilter()
-        ));
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-        environment.jersey().register(RolesAllowedDynamicFeature.class);
+        BasicAuthenticationService basicAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(BasicAuthenticationService.class, UserDAO.class, userDAO);
+        BasicCredentialAuthFilter<BasicAuth> basicFilter = new BasicCredentialAuthFilter.Builder<BasicAuth>().setAuthenticator(basicAuthenticationService).setPrefix("Basic").buildAuthFilter();
+
+        JwtAuthenticationService jwtAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle)
+                .create(JwtAuthenticationService.class, UserDAO.class, userDAO);
+        final JwtConsumer consumer = new JwtConsumerBuilder().setAllowedClockSkewInSeconds(300).setRequireSubject()
+                .setVerificationKey(new HmacKey("funny".getBytes())).build();
+        AuthFilter<JwtContext, User> jwtFilter = new JwtAuthFilter.Builder<User>().setJwtConsumer(consumer).setRealm("realm").setPrefix("Bearer")
+                .setAuthenticator(jwtAuthenticationService).setAuthorizer(new AuthorizationService()).buildAuthFilter();
+
+        final PolymorphicAuthDynamicFeature feature = new PolymorphicAuthDynamicFeature<>(
+                ImmutableMap.of(BasicAuth.class, basicFilter, User.class, jwtFilter));
+        final AbstractBinder binder = new PolymorphicAuthValueFactoryProvider.Binder<>(
+                ImmutableSet.of(BasicAuth.class, User.class));
+
+        environment.jersey().register(feature);
+        environment.jersey().register(binder);
+        environment.jersey().register(RolesAllowedDynamicFeature.class);;
 
         // CORS headers
         final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);

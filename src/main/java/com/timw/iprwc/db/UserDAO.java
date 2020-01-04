@@ -25,6 +25,12 @@ public class UserDAO extends AbstractDAO<User> {
                 .setParameter("email", email)));
     }
 
+    public Optional<User> findById(String userId) {
+        return Optional.ofNullable( uniqueResult((Query) namedQuery(
+                "iprwc.User.findById")
+                .setParameter("userId", userId)));
+    }
+
     public void delete(String userId) {
         namedQuery(
                 "iprwc.User.delete")

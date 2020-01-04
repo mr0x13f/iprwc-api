@@ -1,9 +1,7 @@
 package com.timw.iprwc.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.timw.iprwc.services.AuthenticationService;
+import com.timw.iprwc.services.BasicAuthenticationService;
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 
@@ -20,11 +18,15 @@ import java.util.UUID;
             query = "select u from User u"
                     + " where u.email = :email"),
 
+        @NamedQuery(name = "iprwc.User.findById",
+                query = "select u from User u"
+                        + " where u.userId = :userId"),
+
         @NamedQuery(name = "iprwc.User.delete",
                 query = "delete from User u"
                         + " where u.userId = :userId")
 })
-public class User implements java.security.Principal {
+public class User implements java.security.Principal  {
 
     @Id
     @Column(name = "user_id")
@@ -49,8 +51,8 @@ public class User implements java.security.Principal {
         isAdmin = false;
 
         userId = UUID.randomUUID().toString();
-        passwordSalt = AuthenticationService.generateSalt();
-        passwordHash = AuthenticationService.hashWithSalt(registerForm.password, passwordSalt);
+        passwordSalt = BasicAuthenticationService.generateSalt();
+        passwordHash = BasicAuthenticationService.hashWithSalt(registerForm.password, passwordSalt);
 
     }
 
