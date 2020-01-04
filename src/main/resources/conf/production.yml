@@ -4,7 +4,7 @@
 # server
 server:
   applicationConnectors:
-    - type: http
+    - type: https
       port: 8080
 
 database:
