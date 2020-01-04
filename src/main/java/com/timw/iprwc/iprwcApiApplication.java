@@ -26,6 +26,7 @@ import org.jose4j.keys.HmacKey;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
 
 public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
@@ -56,7 +57,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
     @Override
     public void run(final iprwcApiConfiguration configuration,
-                    final Environment environment) {
+                    final Environment environment) throws NoSuchAlgorithmException {
 
         // DAOs
         final UserDAO userDAO = new UserDAO(hibernateBundle.getSessionFactory());
@@ -70,15 +71,6 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         CartService.setDAO(cartDAO, productDAO, orderDAO);
         WishlistService.setDAO(wishlistDAO, productDAO);
 
-        // Resources
-        bulkRegister(environment,
-                new UserResource(userDAO),
-                new ProductResource(productDAO),
-                new CartResource(cartDAO),
-                new OrderResource(orderDAO),
-                new WishlistResource(wishlistDAO)
-        );
-
         if (configuration.isEnableDebugResource()) {
             environment.jersey().register(new DebugResource(userDAO, productDAO));
         }
@@ -90,7 +82,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         JwtAuthenticationService jwtAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(JwtAuthenticationService.class, UserDAO.class, userDAO);
         final JwtConsumer consumer = new JwtConsumerBuilder().setAllowedClockSkewInSeconds(300).setRequireSubject()
-                .setVerificationKey(new HmacKey(JwtAuthenticationService.JWT_SECRET_KEY)).build();
+                .setVerificationKey(new HmacKey(jwtAuthenticationService.getSecretKey())).build();
         AuthFilter<JwtContext, User> jwtFilter = new JwtAuthFilter.Builder<User>().setJwtConsumer(consumer).setRealm("realm").setPrefix("Bearer")
                 .setAuthenticator(jwtAuthenticationService).setAuthorizer(new AuthorizationService()).buildAuthFilter();
 
@@ -109,6 +101,15 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         cors.setInitParameter("allowedHeaders", "*");
         cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+
+        // Resources
+        bulkRegister(environment,
+                new UserResource(userDAO, jwtAuthenticationService),
+                new ProductResource(productDAO),
+                new CartResource(cartDAO),
+                new OrderResource(orderDAO),
+                new WishlistResource(wishlistDAO)
+        );
 
     }
 

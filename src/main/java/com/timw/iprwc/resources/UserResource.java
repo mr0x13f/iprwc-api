@@ -13,6 +13,7 @@ import org.jose4j.lang.JoseException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Path("/user")
@@ -21,9 +22,11 @@ import java.util.Optional;
 public class UserResource {
 
     private UserDAO userDAO;
+    private JwtAuthenticationService jwtAuthenticationService;
 
-    public UserResource(UserDAO userDAO) {
+    public UserResource(UserDAO userDAO, JwtAuthenticationService jwtAuthenticationService) {
         this.userDAO = userDAO;
+        this.jwtAuthenticationService = jwtAuthenticationService;
     }
 
     @GET
@@ -37,8 +40,8 @@ public class UserResource {
     @GET
     @Path("/token")
     @UnitOfWork
-    public LoginResponse token(@Auth BasicAuth basicAuth) throws JoseException {
-        return new LoginResponse(JwtAuthenticationService.buildToken(basicAuth.user).getCompactSerialization());
+    public LoginResponse token(@Auth BasicAuth basicAuth) throws JoseException, NoSuchAlgorithmException {
+        return new LoginResponse(jwtAuthenticationService.buildToken(basicAuth.user).getCompactSerialization());
     }
 
     @POST

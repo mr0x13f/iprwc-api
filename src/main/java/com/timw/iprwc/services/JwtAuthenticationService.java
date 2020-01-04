@@ -9,13 +9,15 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.HmacKey;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Optional;
 
 import static org.jose4j.jws.AlgorithmIdentifiers.HMAC_SHA256;
 
 public class JwtAuthenticationService implements Authenticator<JwtContext, User> {
 
-    public static final byte[] JWT_SECRET_KEY = "dfwzsdzwh823zebdwdz772632gdsbd3333".getBytes();
+    private static byte[] secretKey;
 
     private UserDAO userDAO;
 
@@ -38,9 +40,8 @@ public class JwtAuthenticationService implements Authenticator<JwtContext, User>
         }
     }
 
+    public JsonWebSignature buildToken(User user) throws NoSuchAlgorithmException {
 
-    public static JsonWebSignature buildToken(User user) {
-        // These claims would be tightened up for production
         final JwtClaims claims = new JwtClaims();
         claims.setSubject("1");
         claims.setStringClaim("userId", user.userId);
@@ -50,7 +51,15 @@ public class JwtAuthenticationService implements Authenticator<JwtContext, User>
         final JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
         jws.setAlgorithmHeaderValue(HMAC_SHA256);
-        jws.setKey(new HmacKey(JwtAuthenticationService.JWT_SECRET_KEY));
+        jws.setKey(new HmacKey(this.getSecretKey()));
         return jws;
+    }
+
+    public byte[] getSecretKey() throws NoSuchAlgorithmException {
+        if (secretKey != null) return secretKey;
+
+        secretKey = new byte[32];
+        SecureRandom.getInstanceStrong().nextBytes(secretKey);
+        return secretKey;
     }
 }
