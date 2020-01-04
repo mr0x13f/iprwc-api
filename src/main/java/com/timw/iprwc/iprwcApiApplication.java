@@ -72,13 +72,16 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
         // Resources
         bulkRegister(environment,
-                new DebugResource(userDAO, productDAO),
                 new UserResource(userDAO),
                 new ProductResource(productDAO),
                 new CartResource(cartDAO),
                 new OrderResource(orderDAO),
                 new WishlistResource(wishlistDAO)
         );
+
+        if (configuration.isEnableDebugResource()) {
+            environment.jersey().register(new DebugResource(userDAO, productDAO));
+        }
 
         // Authenticator
         BasicAuthenticationService basicAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(BasicAuthenticationService.class, UserDAO.class, userDAO);
@@ -87,7 +90,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
         JwtAuthenticationService jwtAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle)
                 .create(JwtAuthenticationService.class, UserDAO.class, userDAO);
         final JwtConsumer consumer = new JwtConsumerBuilder().setAllowedClockSkewInSeconds(300).setRequireSubject()
-                .setVerificationKey(new HmacKey("funny".getBytes())).build();
+                .setVerificationKey(new HmacKey(JwtAuthenticationService.JWT_SECRET_KEY)).build();
         AuthFilter<JwtContext, User> jwtFilter = new JwtAuthFilter.Builder<User>().setJwtConsumer(consumer).setRealm("realm").setPrefix("Bearer")
                 .setAuthenticator(jwtAuthenticationService).setAuthorizer(new AuthorizationService()).buildAuthFilter();
 

@@ -1,11 +1,15 @@
 package com.timw.iprwc.resources;
 
 import com.timw.iprwc.db.UserDAO;
+import com.timw.iprwc.models.BasicAuth;
+import com.timw.iprwc.models.LoginResponse;
 import com.timw.iprwc.models.RegisterForm;
 import com.timw.iprwc.models.User;
+import com.timw.iprwc.services.JwtAuthenticationService;
 import com.timw.iprwc.services.UserService;
 import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
+import org.jose4j.lang.JoseException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,6 +32,13 @@ public class UserResource {
 
         return user;
 
+    }
+
+    @GET
+    @Path("/token")
+    @UnitOfWork
+    public LoginResponse token(@Auth BasicAuth basicAuth) throws JoseException {
+        return new LoginResponse(JwtAuthenticationService.buildToken(basicAuth.user).getCompactSerialization());
     }
 
     @POST

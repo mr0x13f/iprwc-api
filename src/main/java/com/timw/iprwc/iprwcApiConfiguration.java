@@ -16,4 +16,11 @@ public class iprwcApiConfiguration extends Configuration {
     @JsonProperty("database")
     public DataSourceFactory getDataSourceFactory() { return dataSourceFactory; }
 
+    @NotNull
+    @Valid
+    private boolean enableDebugResource = false;
+
+    public boolean isEnableDebugResource() {
+        return enableDebugResource;
+    }
 }

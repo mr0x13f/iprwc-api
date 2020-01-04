@@ -12,3 +12,5 @@ database:
   url: jdbc:sqlite:D:/Users/Tim/Documents/School/iprwc/database.db
   properties:
     hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+enableDebugResource: false
