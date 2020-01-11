@@ -2,6 +2,8 @@ package com.timw.iprwc.resources;
 
 import com.timw.iprwc.db.ProductDAO;
 import com.timw.iprwc.models.Product;
+import com.timw.iprwc.models.User;
+import io.dropwizard.auth.Auth;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.annotation.security.RolesAllowed;
@@ -32,7 +34,7 @@ public class ProductResource {
     @POST
     @RolesAllowed("admin")
     @UnitOfWork
-    public Product createProduct(Product product) {
+    public Product createProduct(@Auth User user, Product product) {
 
         return productDAO.create(product);
 
@@ -51,7 +53,7 @@ public class ProductResource {
     @Path("{productId}")
     @RolesAllowed("admin")
     @UnitOfWork
-    public Product updateProduct(@PathParam("productId") String productId, Product product) {
+    public Product updateProduct(@Auth User user, @PathParam("productId") String productId, Product product) {
 
         return productDAO.update(productId, product);
 
@@ -62,7 +64,7 @@ public class ProductResource {
     @Path("{productId}")
     @RolesAllowed("admin")
     @UnitOfWork
-    public void deleteProduct(@PathParam("productId") String productId) {
+    public void deleteProduct(@Auth User user, @PathParam("productId") String productId) {
 
         productDAO.delete(productId);
 

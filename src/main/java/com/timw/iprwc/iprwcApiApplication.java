@@ -77,14 +77,21 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
         // Authenticator
         BasicAuthenticationService basicAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(BasicAuthenticationService.class, UserDAO.class, userDAO);
-        BasicCredentialAuthFilter<BasicAuth> basicFilter = new BasicCredentialAuthFilter.Builder<BasicAuth>().setAuthenticator(basicAuthenticationService).setPrefix("Basic").buildAuthFilter();
+        BasicCredentialAuthFilter<BasicAuth> basicFilter = new BasicCredentialAuthFilter.Builder<BasicAuth>()
+                .setAuthenticator(basicAuthenticationService)
+                .setPrefix("Basic")
+                .buildAuthFilter();
 
-        JwtAuthenticationService jwtAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle)
-                .create(JwtAuthenticationService.class, UserDAO.class, userDAO);
+        JwtAuthenticationService jwtAuthenticationService = new UnitOfWorkAwareProxyFactory(hibernateBundle).create(JwtAuthenticationService.class, UserDAO.class, userDAO);
         final JwtConsumer consumer = new JwtConsumerBuilder().setAllowedClockSkewInSeconds(300).setRequireSubject()
                 .setVerificationKey(new HmacKey(jwtAuthenticationService.getSecretKey())).build();
-        AuthFilter<JwtContext, User> jwtFilter = new JwtAuthFilter.Builder<User>().setJwtConsumer(consumer).setRealm("realm").setPrefix("Bearer")
-                .setAuthenticator(jwtAuthenticationService).setAuthorizer(new AuthorizationService()).buildAuthFilter();
+        final AuthFilter<JwtContext, User> jwtFilter = new JwtAuthFilter.Builder<User>()
+                .setJwtConsumer(consumer)
+                .setRealm("realm")
+                .setPrefix("Bearer")
+                .setAuthenticator(jwtAuthenticationService)
+                .setAuthorizer(new AuthorizationService())
+                .buildAuthFilter();
 
         final PolymorphicAuthDynamicFeature feature = new PolymorphicAuthDynamicFeature<>(
                 ImmutableMap.of(BasicAuth.class, basicFilter, User.class, jwtFilter));
@@ -93,7 +100,7 @@ public class iprwcApiApplication extends Application<iprwcApiConfiguration> {
 
         environment.jersey().register(feature);
         environment.jersey().register(binder);
-        environment.jersey().register(RolesAllowedDynamicFeature.class);;
+        environment.jersey().register(RolesAllowedDynamicFeature.class);
 
         // CORS headers
         final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
