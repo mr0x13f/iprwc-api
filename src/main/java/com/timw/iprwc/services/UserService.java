@@ -24,7 +24,7 @@ public class UserService {
 
     public static Optional<User> register(RegisterForm registerForm) {
 
-        if (!validateForm(registerForm))
+        if (!validateForm(registerForm) || userDAO.findByEmail(registerForm.email).isPresent())
             return Optional.empty();
 
         User user = new User(registerForm);
@@ -51,10 +51,7 @@ public class UserService {
         return registerForm.password.length() >= PASSWORD_MINIMUM_LENGTH
                 && registerForm.name.length() >= NAME_MINIMUM_LENGTH
                 // We trust Hibernate to validate email addresses. Sending automated emails for proper validation is beyond the scope of this project.
-                && emailValidator.isValid(registerForm.email, null)
-                // No 2 users can have the same email address.
-                && !userDAO.findByEmail(registerForm.email).isPresent();
-
+                && emailValidator.isValid(registerForm.email, null);
     }
 
 }
