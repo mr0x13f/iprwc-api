@@ -15,7 +15,8 @@ import java.util.UUID;
 @Table(name = "products")
 @NamedQueries({
         @NamedQuery(name = "iprwc.Product.findAll",
-            query = "select p from Product p"),
+            query = "select p from Product p"
+                + " order by p.name"),
 
         @NamedQuery(name = "iprwc.Product.findById",
             query = "select p from Product p"
