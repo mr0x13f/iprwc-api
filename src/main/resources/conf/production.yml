@@ -5,11 +5,11 @@
 server:
   applicationConnectors:
     - type: https
-      port: 8080
+      port: 6969
 
 database:
   driverClass: org.sqlite.JDBC
-  url: jdbc:sqlite:D:/Users/Tim/Documents/School/iprwc/database.db
+  url: jdbc:sqlite:/home/pi/iprwc/database.db
   properties:
     hibernate.dialect: org.hibernate.dialect.H2Dialect
 
