@@ -19,7 +19,8 @@ import java.util.UUID;
 @NamedQueries({
         @NamedQuery(name = "iprwc.Order.findAll",
                 query = "select o from Order o"
-                        + " where o.userId = :userId"),
+                        + " where o.userId = :userId"
+                        + " order by o.date desc"),
 
         @NamedQuery(name = "iprwc.Order.findById",
                 query = "select o from Order o"
