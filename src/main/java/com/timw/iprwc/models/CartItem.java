@@ -14,7 +14,9 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name = "iprwc.CartItem.findAll",
                 query = "select c from CartItem c"
-                        + " where c.userId = :userId"),
+                        + " left join Product p on c.productId = p.productId"
+                        + " where c.userId = :userId"
+                        + " order by p.name"),
 
         @NamedQuery(name = "iprwc.CartItem.findById",
                 query = "select c from CartItem c"

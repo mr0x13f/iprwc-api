@@ -14,7 +14,9 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name = "iprwc.WishlistItem.findAll",
                 query = "select w from WishlistItem w"
-                        + " where w.userId = :userId"),
+                        + " left join Product p on w.productId = p.productId"
+                        + " where w.userId = :userId"
+                        + " ordery by p.name"),
 
         @NamedQuery(name = "iprwc.WishlistItem.findById",
                 query = "select w from WishlistItem w"
