@@ -13,24 +13,24 @@ import java.io.Serializable;
 @Table(name = "cart_items")
 @NamedQueries({
         @NamedQuery(name = "iprwc.CartItem.findAll",
-                query = "select c from CartItem c"
-                        + " left join Product p on c.productId = p.productId"
-                        + " where c.userId = :userId"
-                        + " order by p.name"),
+                query = "SELECT c FROM CartItem c"
+                        + " LEFT JOIN Product p ON c.productId = p.productId"
+                        + " WHERE c.userId = :userId"
+                        + " ORDER BY p.name"),
 
         @NamedQuery(name = "iprwc.CartItem.findById",
-                query = "select c from CartItem c"
-                        + " where c.userId = :userId"
-                        + " and c.productId = :productId"),
+                query = "SELECT c FROM CartItem c"
+                        + " WHERE c.userId = :userId"
+                        + " AND c.productId = :productId"),
 
         @NamedQuery(name = "iprwc.CartItem.delete",
-                query = "delete from CartItem c"
-                        + " where c.userId = :userId"
-                        + " and c.productId = :productId"),
+                query = "DELETE FROM CartItem c"
+                        + " WHERE c.userId = :userId"
+                        + " AND c.productId = :productId"),
 
         @NamedQuery(name = "iprwc.CartItem.clear",
-                query = "delete from CartItem c"
-                        + " where c.userId = :userId")
+                query = "DELETE FROM CartItem c"
+                        + " WHERE c.userId = :userId")
 })
 public class CartItem implements Serializable {
 

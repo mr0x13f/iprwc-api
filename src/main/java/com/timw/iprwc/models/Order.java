@@ -18,14 +18,14 @@ import java.util.UUID;
 @Table(name = "orders")
 @NamedQueries({
         @NamedQuery(name = "iprwc.Order.findAll",
-                query = "select o from Order o"
-                        + " where o.userId = :userId"
-                        + " order by o.date desc"),
+                query = "SELECT o FROM Order o"
+                        + " WHERE o.userId = :userId"
+                        + " ORDER BY o.date desc"),
 
         @NamedQuery(name = "iprwc.Order.findById",
-                query = "select o from Order o"
-                        + " where o.userId = :userId"
-                        + " and o.orderId = :orderId")
+                query = "SELECT o FROM Order o"
+                        + " WHERE o.userId = :userId"
+                        + " AND o.orderId = :orderId")
 })
 public class Order {
 

@@ -15,16 +15,16 @@ import java.util.UUID;
 @Table(name = "products")
 @NamedQueries({
         @NamedQuery(name = "iprwc.Product.findAll",
-            query = "select p from Product p"
-                + " order by p.name"),
+            query = "SELECT p FROM Product p"
+                + " ORDER BY p.name"),
 
         @NamedQuery(name = "iprwc.Product.findById",
-            query = "select p from Product p"
-                + " where p.productId = :productId"),
+            query = "SELECT p FROM Product p"
+                + " WHERE p.productId = :productId"),
 
         @NamedQuery(name = "iprwc.Product.delete",
-            query = "delete from Product p"
-                + " where p.productId = :productId")
+            query = "DELETE FROM Product p"
+                + " WHERE p.productId = :productId")
 })
 public class Product {
 

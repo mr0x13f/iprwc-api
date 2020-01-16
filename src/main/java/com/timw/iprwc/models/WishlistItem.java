@@ -13,24 +13,24 @@ import java.io.Serializable;
 @Table(name = "wishlist_items")
 @NamedQueries({
         @NamedQuery(name = "iprwc.WishlistItem.findAll",
-                query = "select w from WishlistItem w"
-                        + " left join Product p on w.productId = p.productId"
-                        + " where w.userId = :userId"
-                        + " ordery by p.name"),
+                query = "SELECT w FROM WishlistItem w"
+                        + " LEFT JOIN Product p ON w.productId = p.productId"
+                        + " WHERE w.userId = :userId"
+                        + " ORDER BY p.name"),
 
         @NamedQuery(name = "iprwc.WishlistItem.findById",
-                query = "select w from WishlistItem w"
-                        + " where w.userId = :userId"
-                        + " and w.productId = :productId"),
+                query = "SELECT w FROM WishlistItem w"
+                        + " WHERE w.userId = :userId"
+                        + " AND w.productId = :productId"),
 
         @NamedQuery(name = "iprwc.WishlistItem.delete",
-                query = "delete from WishlistItem w"
-                        + " where w.userId = :userId"
-                        + " and w.productId = :productId"),
+                query = "DELETE FROM WishlistItem w"
+                        + " WHERE w.userId = :userId"
+                        + " AND w.productId = :productId"),
 
         @NamedQuery(name = "iprwc.WishlistItem.clear",
-                query = "delete from WishlistItem w"
-                        + " where w.userId = :userId")
+                query = "DELETE FROM WishlistItem w"
+                        + " WHERE w.userId = :userId")
 })
 public class WishlistItem implements Serializable {
 

@@ -15,16 +15,16 @@ import java.util.UUID;
 @Table(name = "users")
 @NamedQueries({
         @NamedQuery(name = "iprwc.User.findByEmail",
-            query = "select u from User u"
-                    + " where u.email = :email"),
+            query = "SELECT u FROM User u"
+                    + " WHERE u.email = :email"),
 
         @NamedQuery(name = "iprwc.User.findById",
-                query = "select u from User u"
-                        + " where u.userId = :userId"),
+                query = "SELECT u FROM User u"
+                        + " WHERE u.userId = :userId"),
 
         @NamedQuery(name = "iprwc.User.delete",
-                query = "delete from User u"
-                        + " where u.userId = :userId")
+                query = "DELETE FROM User u"
+                        + " WHERE u.userId = :userId")
 })
 public class User implements java.security.Principal  {
 
