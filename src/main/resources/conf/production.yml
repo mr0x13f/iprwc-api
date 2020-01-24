@@ -6,6 +6,10 @@ server:
   applicationConnectors:
     - type: https
       port: 6969
+      keyStorePath: keystore.jks
+      keyStorePassword: iprwcapi
+      validateCerts: false
+      validatePeers: false
 
 database:
   driverClass: org.sqlite.JDBC
