@@ -11,4 +11,5 @@ Possible code improvements:
 - ~~Not using Dropwizard~~
 
 Check out https://github.com/mr0x13f/iprwc-client/ for the corresponding front-end.
-
+For the time being the webshop is live at https://weebshop.hydrateyourself.moe/.
+It will die eventually when the jks expires and I'm too lazy to fix it.
