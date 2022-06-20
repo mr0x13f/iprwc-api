@@ -1,15 +1,14 @@
 # IprwcAPI
 
-This is a Dropwizard back-end for a PoC webshop as part of a school project. There is of course no shipping or payment as this is only a PoC.
+This is a Java/Dropwizard back-end for a webshop CRUD PoC as part of a school project.
 
 Possible code improvements:
 - Stricter use of the layer architecture
-- A role system that's more than just a boolean (lmao)
-- Expiration of JWT Tokens
+- Role based user authorization instead of an admin flag
+- JWT Token expiration
 - Combining several tables into one response (i.e. wishlist items)
 - Some HTML responses could be better
-- ~~Not using Dropwizard~~
+- Not using Dropwizard
 
-Check out https://github.com/mr0x13f/iprwc-client/ for the corresponding front-end.
-For the time being the webshop is live at https://weebshop.hydrateyourself.moe/.
-It will die eventually when the jks expires and I'm too lazy to fix it.
+See https://github.com/mr0x13f/iprwc-client/ for the corresponding front-end.
+
